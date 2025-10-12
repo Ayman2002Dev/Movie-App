@@ -9,7 +9,8 @@
 - الresponsev بتاع ال navbar
 - تظبيط الملفات بتاعت المشروع
 - تنظيم ملفات ال component- pages- css - store
-
+- عمل صفحة not found - loading page
+  
 تم الانتهاء منه اليوم
 
 - عمل سيكشن للافلام والمسلسلات
