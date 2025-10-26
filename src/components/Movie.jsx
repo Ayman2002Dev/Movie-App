@@ -22,9 +22,6 @@ function Movie(props) {
           {title}
         </h4>
         <div className="type-time flex justify-center items-center gap-[10px] text-white">
-          {/* <div className="type p-1 bg-[var(--primary-color)] text-white rounded-md font-medium">
-            HD
-          </div> */}
           <div className="time text-white">3:12:00</div>
         </div>
       </div>

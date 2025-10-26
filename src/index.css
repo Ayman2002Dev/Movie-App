@@ -5,4 +5,5 @@
 @tailwind utilities;
 * {
   font-family: "poppins", "sans-serif";
+  color: white;
 }

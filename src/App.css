@@ -1,4 +1,6 @@
 :root {
+  --bg-color: #13161f;
+  --bg-secondary-color: #161c29;
   --primary-color: #f00;
   --border-color: #ffffff6e;
 }
@@ -7,30 +9,31 @@ html {
   scroll-behavior: smooth;
 }
 .active {
-  text-decoration: underline;
-  text-decoration-color: var(--primary-color);
-  text-decoration-thickness: 1.2px;
-  text-underline-offset: 3px;
-}
-
-.navbar a:hover {
   color: var(--primary-color);
-  transition: 0.3s;
-}
-
-.chevron-down {
-  animation: up-down 1.2s ease-in-out infinite;
-}
-
-@keyframes up-down {
-  30% {
-    margin-top: 40px;
-  }
-  100% {
-    margin-top: 0px;
-  }
 }
 
 .swiper-navigation-icon {
   color: var(--primary-color);
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px #161c29;
+  border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #f00;
+  border-radius: 7px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #f00;
 }
