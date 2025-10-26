@@ -24,3 +24,4 @@
 ==============
 
 - في صفحة العرض الرئيسية تظبيط شكل البوكسات زي arabsead
+https://drive.google.com/file/d/1WvD8SXmWbYozocnQtghoFdoOB3Qzeql3/view?pli=1
