@@ -1,8 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { castMovie, clearCast } from "../store/Slices/fetchMovieSlice";
 import { useEffect } from "react";
-import { Users } from "lucide-react";
+import { ChevronLeft, Users } from "lucide-react";
 import Loading from "../components/Loading";
 import defaultuser from "../assets/default_user.png";
 
@@ -16,6 +16,7 @@ function Credits() {
   useEffect(() => {
     dispatch(clearCast());
     dispatch(castMovie(movieId));
+    document.title = "Credits";
   }, [movieId, dispatch]);
 
   const cast = castData.map((actor) => {
@@ -76,8 +77,15 @@ function Credits() {
     );
   });
   return (
-    <section className="cast-page">
-      <div className="cast container mx-auto my-12">
+    <section className="cast-page container mx-auto my-12">
+      <Link
+        to={`/movies/${movieId}`}
+        className="mb-5 flex justify-between items-center w-fit bg-[var(--bg-secondary-color)] px-5 py-3 rounded-md duration-[0.4s] hover:bg-[var(--primary-color)]"
+      >
+        <ChevronLeft />
+        <span className="ml-1">Return</span>
+      </Link>
+      <div className="cast">
         <div className="cast-container flex items-center">
           <Users color="var(--primary-color)" size={35} />
           <h1 className="title text-2xl font-bold ml-2 text-[var(--primary-color)]">

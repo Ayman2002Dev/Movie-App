@@ -12,6 +12,8 @@ import Credits from "./pages/Credits";
 import Genre from "./pages/Genre";
 import FetchGenre from "./pages/FetchGenre";
 import GenresList from "./pages/GenresList";
+import MoviesList from "./pages/moviesList";
+import FetchCountry from "./pages/FetchCountry";
 
 function App() {
   return (
@@ -21,15 +23,14 @@ function App() {
         <Routes>
           <Route element={<MainLayout />}>
             <Route path="/" element={<Home />} />
-            {/* <Route path="/genre/country" element={<Country />} /> */}
-            {/* <Route path="/country" element={<Country />} /> */}
 
             {/* Movies */}
             <Route path="/movies" element={<Movies />}>
-              <Route index element={<Home />} />
+              <Route index element={<MoviesList />} />
               <Route path=":movieId" element={<MovieDetails />} />
               <Route path=":movieId/credits" element={<Credits />} />
             </Route>
+            <Route path=":countryName" element={<FetchCountry />} />
 
             {/* Gener */}
             <Route path="/genres" element={<Genre />}>

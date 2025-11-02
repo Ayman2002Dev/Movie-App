@@ -38,11 +38,32 @@ export const fetchGenerMovies = createAsyncThunk(
   }
 );
 
+// Genres Movies by Page
+export const fetchGenerMoviesByPage = createAsyncThunk(
+  "genre/fetchGenerMoviesByPage",
+  async ({ currentPage, genreId }, { rejectWithValue }) => {
+    try {
+      const res = await axios.get(import.meta.env.VITE_GENRE_MOVIES, {
+        params: {
+          api_key: import.meta.env.VITE_API_KEY,
+          with_genres: genreId,
+          language: "en-US",
+          page: currentPage,
+        },
+      });
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error?.response?.data || error.message);
+    }
+  }
+);
+
 const GenreSlice = createSlice({
   name: "genre",
   initialState: {
     genresList: { data: [], loading: false, error: null },
     genres: {},
+    genreByPage: { data: [], error: null, loading: false },
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -98,6 +119,19 @@ const GenreSlice = createSlice({
           loading: false,
           error: action.payload || "Something Went Wrong",
         };
+      })
+      .addCase(fetchGenerMoviesByPage.pending, (state) => {
+        state.genreByPage.loading = true;
+        state.genreByPage.error = null;
+      })
+      .addCase(fetchGenerMoviesByPage.fulfilled, (state, action) => {
+        state.genreByPage.loading = false;
+        state.genreByPage.data = action.payload.results;
+        state.genreByPage.error = null;
+      })
+      .addCase(fetchGenerMoviesByPage.rejected, (state, action) => {
+        state.genreByPage.loading = false;
+        state.genreByPage.error = action.payload || "Something Went Wrong";
       });
   },
 });

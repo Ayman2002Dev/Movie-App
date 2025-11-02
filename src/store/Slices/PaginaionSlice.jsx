@@ -6,7 +6,6 @@ const paginationSlice = createSlice({
     currentPage: +sessionStorage.getItem("currentPage")
       ? +sessionStorage.getItem("currentPage")
       : 1,
-    lastPage: 500,
   },
   reducers: {
     nextpage: (state, action) => {

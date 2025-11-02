@@ -1,11 +1,14 @@
+import { ChevronDown, ChevronLeft } from "lucide-react";
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 
 function Navbar() {
   const [toggleMenu, setToggleMenu] = useState(false);
+  const [toggleMovies, setToggleMovies] = useState(false);
+  const [toggleGenres, setToggleGenres] = useState(false);
 
   return (
-    <nav className="bg-[var(--bg-color)] shadow-md backdrop-blur-3xl border-gray-200 w-full top-0 left-0 max-h-[72px]">
+    <nav className=" bg-[var(--bg-color)] shadow-sm shadow-[var(--primary-color)] backdrop-blur-3xl border-gray-200 w-full top-0 left-0 max-h-[72px]">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         {/* Logo */}
         <Link
@@ -108,22 +111,79 @@ function Navbar() {
               </NavLink>
             </li>
             <li>
-              <NavLink
-                to="/movies"
-                onClick={() => setToggleMenu(false)}
-                className="block py-2 px-3 text-white rounded-sm duration-300 hover:text-[var(--primary-color)]"
-              >
-                Movies
-              </NavLink>
+              <div className="py-2 px-3 text-white rounded-sm duration-300 hover:text-[var(--primary-color)] flex justify-between items-center w-fit relative">
+                {toggleMovies ? (
+                  <ChevronDown
+                    className="cursor-pointer duration-300 hover:text-[var(--primary-color)]"
+                    onClick={() => {
+                      setToggleMovies(false);
+                    }}
+                  />
+                ) : (
+                  <ChevronLeft
+                    className="cursor-pointer duration-300 hover:text-[var(--primary-color)]"
+                    onClick={() => {
+                      setToggleMovies(true);
+                    }}
+                  />
+                )}
+                <NavLink
+                  to="/movies"
+                  onClick={() => setToggleMenu(false)}
+                  className="ml-2"
+                >
+                  Movies
+                </NavLink>
+                <div className="movies-menu absolute top-full left-0 w-full h-fit bg-[var(--bg-secondary-color)] px-3 py-2 rounded-md space-y-2 z-[1000]">
+                  <NavLink to="" className="block">
+                    Egypt
+                  </NavLink>
+                  <NavLink to="" className="block">
+                    Cairo
+                  </NavLink>
+                  <NavLink to="" className="block">
+                    US
+                  </NavLink>
+                  <NavLink to="" className="block">
+                    UK
+                  </NavLink>
+                  <NavLink to="" className="block">
+                    SU
+                  </NavLink>
+                  <NavLink to="" className="block">
+                    SU
+                  </NavLink>
+                  <NavLink to="" className="block">
+                    SU
+                  </NavLink>
+                </div>
+              </div>
             </li>
             <li>
-              <NavLink
-                to="/genres"
-                onClick={() => setToggleMenu(false)}
-                className="block py-2 px-3 text-white rounded-sm duration-300 hover:text-[var(--primary-color)]"
-              >
-                Genres
-              </NavLink>
+              <div className="py-2 px-3 text-white rounded-sm duration-300 hover:text-[var(--primary-color)] flex justify-between items-center w-fit">
+                {toggleGenres ? (
+                  <ChevronDown
+                    className="cursor-pointer duration-300 hover:text-[var(--primary-color)]"
+                    onClick={() => {
+                      setToggleGenres(false);
+                    }}
+                  />
+                ) : (
+                  <ChevronLeft
+                    className="cursor-pointer duration-300 hover:text-[var(--primary-color)]"
+                    onClick={() => {
+                      setToggleGenres(true);
+                    }}
+                  />
+                )}
+                <NavLink
+                  to="/genres"
+                  onClick={() => setToggleMenu(false)}
+                  className="ml-2"
+                >
+                  Genres
+                </NavLink>
+              </div>
             </li>
           </ul>
         </div>

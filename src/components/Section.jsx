@@ -4,8 +4,8 @@ import { Link } from "react-router-dom";
 
 function Section(props) {
   const getCategory = (category) => {
-    const text = category.toLowerCase();
-    return text.replace(" ", "_");
+    const text = category?.toLowerCase();
+    return text?.replace(" ", "_");
   };
 
   return (

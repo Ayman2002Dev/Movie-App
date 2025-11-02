@@ -3,37 +3,15 @@ import { Video } from "lucide-react";
 import { Link } from "react-router-dom";
 import Loading from "./Loading";
 
-function SectionFixed(props) {
-  const getCategory = (category) => {
-    const text = category.toLowerCase();
-    return text.replace(" ", "_");
-  };
-
-  const tenMovies = props?.data?.slice(0, 10);
+function SectionFixedFull(props) {
+  if (props?.data?.length === 0) {
+    return <Loading />;
+  }
   return (
-    <section className="movies-section mt-16 mb-5 hidden md:block relative">
-      {props?.data?.length === 0 && <Loading />}
-      {props.category ? (
-        <div className="container flex justify-between items-center mb-5">
-          <Link
-            to={`/category/${getCategory(props.category)}`}
-            className="text-xl extraSm:text-lg font-bold text-[var(--primary-color)] border border-[var(--border-color)] px-4 py-2 rounded-lg duration-[0.4s] hover:opacity-70"
-          >
-            {props.category}
-          </Link>
-          <div className="box flex justify-center items-center">
-            <h2 className="text-2xl extraSm:xl font-bold text-[var(--primary-color)] mr-2">
-              Movies
-            </h2>
-            <Video color="var(--primary-color)" size={30} />
-          </div>
-        </div>
-      ) : (
-        ""
-      )}
+    <section className="movies-section container mx-auto mt-16 mb-5 relative">
       <div className="moviesContainer grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
-        {tenMovies &&
-          tenMovies.map((movie) => (
+        {props.data &&
+          props.data.map((movie) => (
             <div
               key={movie.id}
               className="relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-1/3 after:bg-gradient-to-t after:from-black/90 after:to-transparent after:rounded-3xl duration-[0.4s] overflow-hidden group"
@@ -55,7 +33,7 @@ function SectionFixed(props) {
                         ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
                         : logo
                     }
-                    alt={movie.original_title}
+                    alt={movie.title}
                     className="w-full h-full object-cover object-center rounded-3xl"
                   />
 
@@ -75,7 +53,7 @@ function SectionFixed(props) {
                   {/* Title */}
                   <div className="absolute bottom-4 left-2 px-2 rounded z-10 pointer-events-none">
                     <p className="text-md font-bold text-white">
-                      {movie.original_title ? movie.original_title : movie.name}
+                      {movie.title ? movie.title : movie.name}
                     </p>
                   </div>
                 </Link>
@@ -87,4 +65,4 @@ function SectionFixed(props) {
   );
 }
 
-export default SectionFixed;
+export default SectionFixedFull;

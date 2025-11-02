@@ -4,7 +4,7 @@ import axios from "axios";
 // Movie Details
 export const fetchMovie = createAsyncThunk(
   "fetchMovie/fetchMovie",
-  async (movieId) => {
+  async (movieId, { rejectWithValue }) => {
     try {
       const res = await axios.get(
         `${import.meta.env.VITE_MOVIE_DETAILS}/${movieId}`,
@@ -18,6 +18,9 @@ export const fetchMovie = createAsyncThunk(
       const data = await res.data;
       return data;
     } catch (error) {
+      if (error.response && error.response.status === 404) {
+        return rejectWithValue("Movie not found");
+      }
       return rejectWithValue(error.response?.data || error.message);
     }
   }
@@ -78,7 +81,7 @@ export const castMovie = createAsyncThunk(
 const fetchMovieSlice = createSlice({
   name: "fetchMovie",
   initialState: {
-    movieData: { data: [], loading: false, error: null },
+    movieData: { data: [], loading: false, error: null, status: "succeeded" },
     credits: { data: { cast: [], crew: [] }, loading: false, error: null },
     trailer: { data: [], loading: false, error: null },
   },
@@ -96,10 +99,12 @@ const fetchMovieSlice = createSlice({
       })
       .addCase(fetchMovie.fulfilled, (state, action) => {
         state.movieData.loading = false;
+        state.movieData.status = "succeeded";
         state.movieData.data = action.payload;
       })
       .addCase(fetchMovie.rejected, (state, action) => {
         state.movieData.loading = false;
+        state.movieData.status = "failed";
         state.movieData.error = action.payload || "Something went wrong";
       })
       // Trailer

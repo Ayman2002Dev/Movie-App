@@ -1,6 +1,6 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { CiBookmarkPlus } from "react-icons/ci";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import { MdAccessTime } from "react-icons/md";
@@ -14,6 +14,7 @@ import { fetchMovie, trailerMovie } from "../store/Slices/fetchMovieSlice";
 import SectionFixed from "../components/SectionFixed";
 import Section from "../components/Section";
 import { nowPlayingMovies } from "../store/Slices/MovieSlice";
+import NotFound from "./NotFound";
 
 function MovieDetails() {
   const dispatch = useDispatch();
@@ -26,6 +27,8 @@ function MovieDetails() {
   const movieData = movieList.data;
   const trailerList = useSelector((state) => state.fetchMovie.trailer);
   const trailerData = trailerList.data;
+
+  const navigate = useNavigate();
 
   const officialTrailer = trailerData.filter((trailer) => {
     return trailer.type === "Trailer";
@@ -49,6 +52,8 @@ function MovieDetails() {
   const minutes = movieData.runtime % 60;
   const fullTime = `${hours ? hours : ""} : ${minutes}`;
 
+  console.log(movieList);
+
   useEffect(() => {
     if (!movieData || movieData.id !== Number(movieId)) {
       dispatch(fetchMovie(movieId));
@@ -59,9 +64,19 @@ function MovieDetails() {
     document.title = movieData.title || "Cinema Scope";
   }, [movieId, dispatch]);
 
+  if (movieList.status === "failed") {
+    return <NotFound />;
+  }
+
   if (movieList.loading || movieData.length === 0) {
     return <Loading />;
   }
+
+  console.log(movieList);
+
+  // if (!movieList) {
+  //   return <NotFound />;
+  // }
 
   return (
     <section className="w-full container mx-auto">

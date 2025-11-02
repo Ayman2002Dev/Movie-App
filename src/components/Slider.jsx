@@ -25,7 +25,7 @@ function Slider({ data }) {
           1920: { slidesPerView: 6 },
         }}
       >
-        {data.map((movie) => (
+        {data?.map((movie) => (
           <SwiperSlide
             key={movie.id}
             className="relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-1/3 after:bg-gradient-to-t after:from-black/95 after:via-black/70 after:to-transparent after:rounded-3xl duration-[0.4s] overflow-hidden group"
@@ -43,7 +43,7 @@ function Slider({ data }) {
                     ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
                     : logo
                 }
-                alt={movie.title}
+                alt={movie.original_title}
                 className="w-full h-full object-cover object-center rounded-3xl"
               />
 
@@ -62,8 +62,8 @@ function Slider({ data }) {
 
               {/* Title */}
               <div className="absolute bottom-4 left-2 px-2 rounded z-10 pointer-events-none">
-                <p className="text-md md:text-lg font-bold text-white pointer-events-none">
-                  {movie.title ? movie.title : movie.name}
+                <p className="text-md font-bold text-white pointer-events-none">
+                  {movie.original_title ? movie.original_title : movie.name}
                 </p>
               </div>
             </Link>

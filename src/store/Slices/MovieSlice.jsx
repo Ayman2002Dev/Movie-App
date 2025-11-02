@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { countries } from "../../pages/moviesList";
 
 // Popular
 export const popularMovies = createAsyncThunk(
@@ -93,31 +94,64 @@ export const fetchCategoryMovies = createAsyncThunk(
   }
 );
 
-// fetch Movies By Genere
-// export const fetchMoviesByGenre = createAsyncThunk(
-//   "movies/fetchMoviesByGenre",
-//   async (genreId) => {
-//     try {
-//       const res = await axios.get(
-//         `${import.meta.env.VITE_MOVIE_Details}${movieId}`,
-//         {
-//           params: {
-//             api_key: import.meta.env.VITE_API_KEY,
-//             language: "en-US",
-//           },
-//         }
-//       );
-//       const data = await res.data;
-//       return data;
-//     } catch (error) {
-//       console.error(
-//         "Error fetching data:",
-//         error.response?.data || error.message
-//       );
-//       throw error;
-//     }
-//   }
-// );
+// Fetch movies by origin country more than one
+export const fetchMoviesWithOriginCountry = createAsyncThunk(
+  "movies/fetchMoviesWithOriginCountry",
+  async ({ originLanguage, originCountry }, { rejectWithValue }) => {
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_MOVIE_ORIGIN_COUNTRY}`,
+        {
+          params: {
+            api_key: import.meta.env.VITE_API_KEY,
+            with_origin_language: originLanguage,
+            with_origin_country: originCountry,
+            sort_by: "release_date.desc",
+            page: 1,
+          },
+        }
+      );
+      return { iso: originCountry, results: res.data.results };
+    } catch (error) {
+      return rejectWithValue({
+        iso: originCountry,
+        error: error.response?.data || error.message,
+      });
+    }
+  }
+);
+
+// Fetch movie by origin country one only
+export const fetchMoviesCountry = createAsyncThunk(
+  "movies/fetchMoviesCountry",
+  async (
+    { originLanguage, originCountry, currentPage },
+    { rejectWithValue }
+  ) => {
+    try {
+      console.log(currentPage);
+
+      const res = await axios.get(
+        `${import.meta.env.VITE_MOVIE_ORIGIN_COUNTRY}`,
+        {
+          params: {
+            api_key: import.meta.env.VITE_API_KEY,
+            with_origin_language: originLanguage,
+            with_origin_country: originCountry,
+            sort_by: "release_date.desc",
+            page: currentPage,
+          },
+        }
+      );
+      return res.data;
+    } catch (error) {
+      return rejectWithValue({
+        iso: originCountry,
+        error: error.response?.data || error.message,
+      });
+    }
+  }
+);
 
 export const moviesSlice = createSlice({
   initialState: {
@@ -125,6 +159,13 @@ export const moviesSlice = createSlice({
     nowPlaying: { data: [], error: null, loading: false },
     topRated: { data: [], error: null, loading: false },
     fetchCategory: { data: [], error: null, loading: false },
+    moviesOriginCountry: {},
+    fetchMovieCountry: {
+      data: [],
+      error: null,
+      loading: false,
+      totalPages: null,
+    },
   },
   name: "movies",
   reducers: {},
@@ -181,6 +222,56 @@ export const moviesSlice = createSlice({
       .addCase(fetchCategoryMovies.rejected, (state, action) => {
         state.fetchCategory.loading = false;
         state.fetchCategory.error = action.payload || "Something went wrong";
+      })
+      // Fetch movies with origin country more
+      .addCase(fetchMoviesWithOriginCountry.pending, (state, action) => {
+        const { originCountry: iso } = action.meta.arg;
+
+        state.fetchMovieCountry[iso] = {
+          ...(state.fetchMovieCountry[iso] || {
+            info: null,
+            data: [],
+            loading: true,
+            error: null,
+          }),
+        };
+      })
+
+      .addCase(fetchMoviesWithOriginCountry.fulfilled, (state, action) => {
+        const information = countries.find((country) => {
+          return country.iso === action.payload.iso;
+        });
+        state.moviesOriginCountry[action.payload.iso] = {
+          info: information,
+          data: action.payload.results,
+          error: null,
+          loading: false,
+        };
+      })
+      .addCase(fetchMoviesWithOriginCountry.rejected, (state, action) => {
+        const iso = action.payload?.iso || action.meta.arg;
+        state.moviesOriginCountry[iso] = {
+          data: [],
+          error: action.payload?.error || "Unknown error",
+          loading: false,
+        };
+      })
+      // Fetch movies with origin country one only
+      .addCase(fetchMoviesCountry.pending, (state) => {
+        state.fetchMovieCountry.loading = true;
+        state.fetchMovieCountry.error = null;
+      })
+      .addCase(fetchMoviesCountry.fulfilled, (state, action) => {
+        state.fetchMovieCountry.loading = false;
+        state.fetchMovieCountry.error = null;
+        state.fetchMovieCountry.data = action.payload.results;
+        state.fetchMovieCountry.totalPages = action.payload.total_pages;
+      })
+      .addCase(fetchMoviesCountry.rejected, (state, action) => {
+        state.fetchMovieCountry.loading = false;
+        state.fetchMovieCountry.data = [];
+        state.fetchMovieCountry.error =
+          action.payload?.error || "Unknown error";
       });
   },
 });
