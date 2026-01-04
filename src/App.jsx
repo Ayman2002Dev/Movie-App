@@ -3,7 +3,7 @@ import "./App.css";
 import "./index.css";
 import Category from "./pages/Category";
 import Country from "./components/Country";
-import MainLayout from "./layouts/mainLayout";
+import MainLayout from "./layouts/MainLayout";
 import NotFound from "./pages/NotFound";
 import Home from "./pages/Home";
 import Movies from "./pages/movies";
