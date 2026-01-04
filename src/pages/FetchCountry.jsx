@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { countries } from "./moviesList";
+import { countries } from "./MoviesList";
 import { useParams } from "react-router-dom";
 import { fetchMoviesCountry } from "../store/Slices/MovieSlice";
 import SectionFixedFull from "../components/SectionFixedFull";

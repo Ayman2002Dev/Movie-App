@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { countries } from "../../pages/moviesList";
+import { countries } from "../../pages/MoviesList";
 
 // Popular
 export const popularMovies = createAsyncThunk(

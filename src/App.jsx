@@ -5,14 +5,14 @@ import Category from "./pages/Category";
 import Country from "./components/Country";
 import MainLayout from "./layouts/MainLayout";
 import NotFound from "./pages/NotFound";
-import Home from "./pages/Home";
-import Movies from "./pages/movies";
+import Home from "./pages/home";
+import Movies from "./pages/Movies";
 import MovieDetails from "./pages/MovieDetails";
 import Credits from "./pages/Credits";
 import Genre from "./pages/Genre";
 import FetchGenre from "./pages/FetchGenre";
 import GenresList from "./pages/GenresList";
-import MoviesList from "./pages/moviesList";
+import MoviesList from "./pages/MoviesList";
 import FetchCountry from "./pages/FetchCountry";
 
 function App() {
