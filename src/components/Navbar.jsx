@@ -134,7 +134,7 @@ function Navbar() {
                 >
                   Movies
                 </NavLink>
-                <div className="movies-menu absolute top-full left-0 w-full h-fit bg-[var(--bg-secondary-color)] px-3 py-2 rounded-md space-y-2 z-[1000]">
+                {/* <div className="movies-menu absolute top-full left-0 w-full h-fit bg-[var(--bg-secondary-color)] px-3 py-2 rounded-md space-y-2 z-[1000]">
                   <NavLink to="" className="block">
                     Egypt
                   </NavLink>
@@ -156,7 +156,7 @@ function Navbar() {
                   <NavLink to="" className="block">
                     SU
                   </NavLink>
-                </div>
+                </div> */}
               </div>
             </li>
             <li>
