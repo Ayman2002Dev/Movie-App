@@ -52,8 +52,6 @@ function MovieDetails() {
   const minutes = movieData.runtime % 60;
   const fullTime = `${hours ? hours : ""} : ${minutes}`;
 
-  console.log(movieList);
-
   useEffect(() => {
     if (!movieData || movieData.id !== Number(movieId)) {
       dispatch(fetchMovie(movieId));
@@ -71,12 +69,6 @@ function MovieDetails() {
   if (movieList.loading || movieData.length === 0) {
     return <Loading />;
   }
-
-  console.log(movieList);
-
-  // if (!movieList) {
-  //   return <NotFound />;
-  // }
 
   return (
     <section className="w-full container mx-auto">

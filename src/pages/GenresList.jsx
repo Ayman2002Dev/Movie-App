@@ -11,15 +11,12 @@ function GenresList() {
   // Genres Data
   const { genres: genresData } = useSelector(
     (state) => state.genre,
-    shallowEqual
+    shallowEqual,
   );
-  console.log(genresList);
-  console.log(genresData);
+
   const genres = Object.values(genresData).map((g) => {
     return g;
   });
-
-  console.log(genresData);
 
   useEffect(() => {
     dispatch(fetchGeners()).then((res) => {

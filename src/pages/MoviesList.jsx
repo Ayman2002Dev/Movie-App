@@ -17,7 +17,7 @@ function MoviesList() {
   const dispatch = useDispatch();
   const { moviesOriginCountry } = useSelector(
     (state) => state.movies,
-    shallowEqual
+    shallowEqual,
   );
 
   useEffect(() => {
@@ -26,13 +26,12 @@ function MoviesList() {
         fetchMoviesWithOriginCountry({
           originLanguage: country.lang,
           originCountry: country.iso,
-        })
+        }),
       );
     });
 
     document.title = "Movies";
   }, [dispatch]);
-  console.log(moviesOriginCountry);
 
   return (
     <section className="movies-list-page">
@@ -45,7 +44,7 @@ function MoviesList() {
             country={country?.info?.country}
             data={country?.data}
           />
-        )
+        ),
       )}
     </section>
   );

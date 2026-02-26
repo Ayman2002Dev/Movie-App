@@ -16,13 +16,13 @@ export const popularMovies = createAsyncThunk(
             language: "en-US",
             page: currentPage >= totalPage ? totalPage : currentPage,
           },
-        }
+        },
       );
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
 
 // Now Playing
@@ -39,13 +39,13 @@ export const nowPlayingMovies = createAsyncThunk(
             language: "en-US",
             page: currentPage >= totalPage ? totalPage : currentPage,
           },
-        }
+        },
       );
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
 
 // Top Rated
@@ -62,13 +62,13 @@ export const topRatedMovies = createAsyncThunk(
             language: "en-US",
             page: currentPage >= totalPage ? totalPage : currentPage,
           },
-        }
+        },
       );
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
 
 // Fetch category
@@ -85,13 +85,13 @@ export const fetchCategoryMovies = createAsyncThunk(
             language: "en-US",
             page: currentPage >= totalPage ? totalPage : currentPage,
           },
-        }
+        },
       );
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
 
 // Fetch movies by origin country more than one
@@ -109,7 +109,7 @@ export const fetchMoviesWithOriginCountry = createAsyncThunk(
             sort_by: "release_date.desc",
             page: 1,
           },
-        }
+        },
       );
       return { iso: originCountry, results: res.data.results };
     } catch (error) {
@@ -118,7 +118,7 @@ export const fetchMoviesWithOriginCountry = createAsyncThunk(
         error: error.response?.data || error.message,
       });
     }
-  }
+  },
 );
 
 // Fetch movie by origin country one only
@@ -126,11 +126,9 @@ export const fetchMoviesCountry = createAsyncThunk(
   "movies/fetchMoviesCountry",
   async (
     { originLanguage, originCountry, currentPage },
-    { rejectWithValue }
+    { rejectWithValue },
   ) => {
     try {
-      console.log(currentPage);
-
       const res = await axios.get(
         `${import.meta.env.VITE_MOVIE_ORIGIN_COUNTRY}`,
         {
@@ -141,7 +139,7 @@ export const fetchMoviesCountry = createAsyncThunk(
             sort_by: "release_date.desc",
             page: currentPage,
           },
-        }
+        },
       );
       return res.data;
     } catch (error) {
@@ -150,7 +148,7 @@ export const fetchMoviesCountry = createAsyncThunk(
         error: error.response?.data || error.message,
       });
     }
-  }
+  },
 );
 
 export const moviesSlice = createSlice({

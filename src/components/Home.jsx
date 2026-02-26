@@ -18,7 +18,6 @@ function Home() {
 
   const currentPage = useSelector((state) => state.pagination.currentPage);
   const dispatch = useDispatch();
-  console.log(moviesList);
   useEffect(() => {
     dispatch(popularMovies(currentPage));
     dispatch(nowPlayingMovies(currentPage));
@@ -26,7 +25,6 @@ function Home() {
     dispatch(topRatedSeries(currentPage));
     document.title = "Cinema Scope | Home";
   }, [dispatch, currentPage]);
-  // console.log(moviesList.movies[0].poster_path);
 
   const showData = moviesList.popular.map((movie) => {
     return (

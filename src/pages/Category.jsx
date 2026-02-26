@@ -11,7 +11,6 @@ function Category() {
   const dispatch = useDispatch();
   const { fetchCategory: categoryList } = useSelector((state) => state.movies);
   const categoryData = categoryList.data;
-  console.log(category);
 
   const currentPage = useSelector((state) => state.pagination.currentPage);
 
