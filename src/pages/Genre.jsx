@@ -7,7 +7,7 @@ function Genre() {
     document.title = genreName;
   }, [genreName]);
   return (
-    <section className="genre-page container mx-auto px-5 mb-5">
+    <section className="genre-page container mx-auto  mb-5">
       <Outlet />
     </section>
   );

@@ -15,7 +15,7 @@ function SectionSwiper(props) {
           {props.country ? (
             <div className="flex justify-between items-center mb-5">
               <Link
-                to={`/${getName(props.country)}`}
+                to={`/country/${getName(props.country)}`}
                 className="text-xl extraSm:text-lg font-bold text-[var(--primary-color)] border border-[var(--border-color)] px-4 py-2 rounded-lg duration-[0.4s] hover:opacity-70"
               >
                 {props.country || "Unknown Country"}

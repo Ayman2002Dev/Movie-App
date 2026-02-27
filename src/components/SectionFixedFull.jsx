@@ -8,7 +8,7 @@ function SectionFixedFull(props) {
     return <Loading />;
   }
   return (
-    <section className="movies-section container mx-auto mt-16 mb-5 relative">
+    <section className="movies-section container mx-auto mt-16 mb-5 px-4 relative">
       <div className="moviesContainer grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
         {props.data &&
           props.data.map((movie) => (

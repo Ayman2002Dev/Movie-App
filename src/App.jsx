@@ -2,7 +2,6 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import "./index.css";
 import Category from "./pages/Category";
-import Country from "./components/Country";
 import MainLayout from "./layouts/MainLayout";
 import NotFound from "./pages/NotFound";
 import Home from "./pages/home";
@@ -17,33 +16,32 @@ import FetchCountry from "./pages/FetchCountry";
 
 function App() {
   return (
-    <div className="App scrollable">
-      <BrowserRouter>
-        {/* <Breadcrumbs />  */}
-        <Routes>
-          <Route element={<MainLayout />}>
-            <Route path="/" element={<Home />} />
+    <BrowserRouter>
+      <Routes>
+        <Route element={<MainLayout />}>
+          <Route path="/" element={<Home />} />
 
-            {/* Movies */}
-            <Route path="/movies" element={<Movies />}>
-              <Route index element={<MoviesList />} />
-              <Route path=":movieId" element={<MovieDetails />} />
-              <Route path=":movieId/credits" element={<Credits />} />
-            </Route>
-            <Route path=":countryName" element={<FetchCountry />} />
-
-            {/* Gener */}
-            <Route path="/genres" element={<Genre />}>
-              <Route index element={<GenresList />} />
-              <Route path=":genreName" element={<FetchGenre />} />
-            </Route>
-
-            <Route path="/category/:category" element={<Category />} />
+          {/* Movies */}
+          <Route path="/movies" element={<Movies />}>
+            <Route index element={<MoviesList />} />
+            <Route path=":movieId" element={<MovieDetails />} />
+            <Route path=":movieId/credits" element={<Credits />} />
           </Route>
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </div>
+
+          <Route path="/country/:countryName" element={<FetchCountry />} />
+
+          {/* Genre */}
+          <Route path="/genres" element={<Genre />}>
+            <Route index element={<GenresList />} />
+            <Route path=":genreName" element={<FetchGenre />} />
+          </Route>
+
+          <Route path="/category/:category" element={<Category />} />
+        </Route>
+
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
-import { CiBookmarkPlus } from "react-icons/ci";
+import { useParams } from "react-router-dom";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import { MdAccessTime } from "react-icons/md";
 import { AiFillStar } from "react-icons/ai";
@@ -15,6 +14,7 @@ import SectionFixed from "../components/SectionFixed";
 import Section from "../components/Section";
 import { nowPlayingMovies } from "../store/Slices/MovieSlice";
 import NotFound from "./NotFound";
+import TrailerSection from "../components/TrailerSection";
 
 function MovieDetails() {
   const dispatch = useDispatch();
@@ -27,12 +27,6 @@ function MovieDetails() {
   const movieData = movieList.data;
   const trailerList = useSelector((state) => state.fetchMovie.trailer);
   const trailerData = trailerList.data;
-
-  const navigate = useNavigate();
-
-  const officialTrailer = trailerData.filter((trailer) => {
-    return trailer.type === "Trailer";
-  });
 
   // Extract Genre List
   const genresBox = movieData.genres?.map((genre) => (
@@ -72,31 +66,7 @@ function MovieDetails() {
 
   return (
     <section className="w-full container mx-auto">
-      {trailerList.loading ? (
-        <Loading />
-      ) : (
-        <div className="trailer mt-10 w-full h-[300px] md:h-[600px] xl:h-[calc(100vh - 112px)] overflow-hidden rounded-3xl">
-          {officialTrailer?.length > 0 || trailerData?.length > 0 ? (
-            <iframe
-              className="block w-full h-full object-cover"
-              src={
-                officialTrailer?.length > 0
-                  ? `https://www.youtube.com/embed/${officialTrailer[0].key}?autoplay=1&mute=1&loop=1&playlist=${officialTrailer[0].key}&modestbranding=1&controls=1&showinfo=0`
-                  : `https://www.youtube.com/embed/${trailerData[0].key}?autoplay=1&mute=1&loop=1&playlist=${trailerData[0].key}&modestbranding=1&controls=1&showinfo=0`
-              }
-              title="Trailer"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              referrerPolicy="strict-origin-when-cross-origin"
-              allowFullScreen
-            ></iframe>
-          ) : (
-            <p className="text-center py-10 text-gray-400">
-              No Trailer Available
-            </p>
-          )}
-        </div>
-      )}
+      <TrailerSection trailerData={trailerData} />
       <Cast />
       <div className="relative movieInfo mt-16 flex flex-col lg:flex-row">
         <div className="poster rounded-3xl w-full self-center mb-10 sm:w-[65%] lg:w-[350px]">
@@ -110,7 +80,7 @@ function MovieDetails() {
             alt="poster Image"
           />
           <a
-            href={movieData.homepage}
+            href={`https://www.themoviedb.org/movie/${movieData.id}`}
             target="_blank"
             className="watch-now w-full px-5 p-3 rounded-3xl bg-[var(--bg-secondary-color)] mt-5 flex justify-center items-center duration-[0.4s] hover:bg-[var(--primary-color)]"
           >

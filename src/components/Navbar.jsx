@@ -4,6 +4,8 @@ import { Link, NavLink } from "react-router-dom";
 import logo from "../assets/logo.png";
 import useDebounce from "../hooks/useDebounce";
 import Loading from "./Loading";
+import { IoMdRadioButtonOn } from "react-icons/io";
+import DropdowmMenu from "./DropdowmMenu";
 
 function Navbar() {
   const [toggleMenu, setToggleMenu] = useState(false);
@@ -15,8 +17,34 @@ function Navbar() {
   const inputRef = useRef(null);
   const containerRef = useRef(null);
 
+  const genresMap = {
+    28: "Action",
+    12: "Adventure",
+    16: "Animation",
+    35: "Comedy",
+    80: "Crime",
+    99: "Documentary",
+    18: "Drama",
+    10751: "Family",
+    14: "Fantasy",
+    36: "History",
+    27: "Horror",
+    10402: "Music",
+    9648: "Mystery",
+    10749: "Romance",
+    878: "Science Fiction",
+    10770: "TV Movie",
+    53: "Thriller",
+    10752: "War",
+    37: "Western",
+  };
+
   const handleQuery = (event) => {
     setQuery(event.target.value);
+  };
+
+  const handleToggleMenu = () => {
+    setToggleMenu(!toggleMenu);
   };
 
   const handleOpen = () => {
@@ -26,6 +54,8 @@ function Navbar() {
   const handleClick = () => {
     inputRef.current.blur();
     setOpen(false);
+  };
+  const handleClose = () => {
     setToggleMenu(false);
   };
 
@@ -36,6 +66,7 @@ function Navbar() {
         !containerRef.current.contains(event.target)
       ) {
         setOpen(false);
+        setToggleMenu(false);
       }
     };
 
@@ -64,54 +95,46 @@ function Navbar() {
               <NavLink
                 to="/"
                 onClick={() => setToggleMenu(false)}
-                className="block py-2 px-3 text-white rounded-sm duration-300 hover:text-[var(--primary-color)]"
+                className="block py-2 px-7 text-white rounded-sm duration-300 hover:text-[var(--primary-color)]"
               >
                 Home
               </NavLink>
             </li>
-            <li>
-              <div className="py-2 px-3 text-white rounded-sm duration-300 hover:text-[var(--primary-color)] flex justify-between items-center w-fit relative">
-                {toggleMovies ? (
-                  <ChevronDown
-                    className="cursor-pointer duration-300 hover:text-[var(--primary-color)]"
-                    onClick={() => setToggleMovies(false)}
-                  />
-                ) : (
-                  <ChevronLeft
-                    className="cursor-pointer duration-300 hover:text-[var(--primary-color)]"
-                    onClick={() => setToggleMovies(true)}
-                  />
-                )}
-                <NavLink
-                  to="/movies"
-                  onClick={() => setToggleMenu(false)}
-                  className="ml-2"
-                >
+            <li
+              className="relative"
+              onMouseLeave={() => setToggleMovies(false)}
+              onMouseMove={() => setToggleMovies(true)}
+            >
+              <div className="py-2 px-7 text-white rounded-sm duration-300 hover:text-[var(--primary-color)] flex justify-between items-center w-fit relative">
+                <ChevronLeft
+                  className={`${toggleMovies ? "-rotate-90" : "rotate-0"} cursor-pointer duration-300 hover:text-[var(--primary-color)]`}
+                />
+                <NavLink to="/movies" className="ml-2">
                   Movies
                 </NavLink>
               </div>
+              <DropdowmMenu
+                toggleMovies={toggleMovies}
+                handleClose={handleClose}
+              />
             </li>
-            <li>
-              <div className="py-2 px-3 text-white rounded-sm duration-300 hover:text-[var(--primary-color)] flex justify-between items-center w-fit">
-                {toggleGenres ? (
-                  <ChevronDown
-                    className="cursor-pointer duration-300 hover:text-[var(--primary-color)]"
-                    onClick={() => setToggleGenres(false)}
-                  />
-                ) : (
-                  <ChevronLeft
-                    className="cursor-pointer duration-300 hover:text-[var(--primary-color)]"
-                    onClick={() => setToggleGenres(true)}
-                  />
-                )}
-                <NavLink
-                  to="/genres"
-                  onClick={() => setToggleMenu(false)}
-                  className="ml-2"
-                >
+            <li
+              className="relative"
+              onMouseLeave={() => setToggleGenres(false)}
+              onMouseMove={() => setToggleGenres(true)}
+            >
+              <div className="py-2 px-7 text-white rounded-sm duration-300 hover:text-[var(--primary-color)] flex justify-between items-center w-fit">
+                <ChevronLeft
+                  className={`${toggleGenres ? "-rotate-90" : "rotate-0"} cursor-pointer duration-300 hover:text-[var(--primary-color)]`}
+                />
+                <NavLink to="/genres" className="ml-2">
                   Genres
                 </NavLink>
               </div>
+              <DropdowmMenu
+                toggleGenres={toggleGenres}
+                handleClose={handleClose}
+              />
             </li>
           </ul>
 
@@ -142,6 +165,7 @@ function Navbar() {
                 onChange={handleQuery}
                 onClick={handleOpen}
                 ref={inputRef}
+                autoComplete="off"
               />
 
               {/* Search results */}
@@ -183,9 +207,33 @@ function Navbar() {
                                 {item.title || item.original_title}
                               </p>
 
-                              <p className="text-[12px] text-gray-400">
-                                action
-                              </p>
+                              <div className="movie-data-box flex justify-start items-center gap-2 mt-1">
+                                {item?.genre_ids &&
+                                  item?.genre_ids
+                                    ?.slice(0, 2)
+                                    .map((genre, index) => (
+                                      <div
+                                        key={genre}
+                                        className="gener-box flex items-center gap-1"
+                                      >
+                                        <IoMdRadioButtonOn />
+                                        <p className="text-[12px] text-gray-400">
+                                          {genresMap[genre]}
+                                        </p>
+                                      </div>
+                                    ))}
+
+                                {item?.release_date && (
+                                  <div className="gener-box flex items-center gap-1">
+                                    <IoMdRadioButtonOn />
+                                    <p className="text-[12px] text-gray-400">
+                                      {new Date(
+                                        item?.release_date,
+                                      ).getFullYear()}
+                                    </p>
+                                  </div>
+                                )}
+                              </div>
                             </div>
                           </div>
                         </Link>
@@ -200,7 +248,7 @@ function Navbar() {
 
             {/* Toggle Button (Mobile) */}
             <button
-              onClick={() => setToggleMenu(!toggleMenu)}
+              onClick={handleToggleMenu}
               type="button"
               className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm rounded-lg lg:hidden focus:outline-none"
               aria-controls="navbar-menu"
@@ -228,60 +276,52 @@ function Navbar() {
               : "opacity-0 -top-[10px] hidden"
           } items-end justify-start transition-all duration-500 lg:hidden`}
         >
-          {/* Links */}
-          <ul className="flex flex-col items-center p-4 lg:p-0 mt-4 font-medium rounded-lg lg:flex-row lg:mt-0 lg:border-0 lg:bg-transparent">
+          {/* Links in Small screen */}
+          <ul className=" lg:flex flex-col items-center p-4 lg:p-0 mt-4 font-medium rounded-lg lg:flex-row lg:mt-0 lg:border-0 lg:bg-transparent space-y-2">
             <li>
               <NavLink
                 to="/"
-                onClick={() => setToggleMenu(false)}
+                onClick={handleClose}
                 className="block py-2 px-3 text-white rounded-sm duration-300 hover:text-[var(--primary-color)]"
               >
                 Home
               </NavLink>
             </li>
-            <li>
-              <div className="py-2 px-3 text-white rounded-sm duration-300 hover:text-[var(--primary-color)] flex justify-between items-center w-fit relative">
-                {toggleMovies ? (
-                  <ChevronDown
-                    className="cursor-pointer duration-300 hover:text-[var(--primary-color)]"
-                    onClick={() => setToggleMovies(false)}
-                  />
-                ) : (
-                  <ChevronLeft
-                    className="cursor-pointer duration-300 hover:text-[var(--primary-color)]"
-                    onClick={() => setToggleMovies(true)}
-                  />
-                )}
-                <NavLink
-                  to="/movies"
-                  onClick={() => setToggleMenu(false)}
-                  className="ml-2"
-                >
+            <li
+              className="relative"
+              onClick={() => setToggleMovies((prev) => !prev)}
+            >
+              <div className="py-2 px-0 text-white rounded-sm duration-300 hover:text-[var(--primary-color)] flex justify-between items-center w-fit relative">
+                <ChevronLeft
+                  className={`${toggleMovies ? "-rotate-90" : "rotate-0"} cursor-pointer duration-300 hover:text-[var(--primary-color)]`}
+                />
+                <NavLink to="/movies" className="ml-2" onClick={handleClose}>
                   Movies
                 </NavLink>
               </div>
+              <DropdowmMenu
+                toggleMovies={toggleMovies}
+                customCss="relative top-0 "
+                handleClose={handleClose}
+              />
             </li>
-            <li>
-              <div className="py-2 px-3 text-white rounded-sm duration-300 hover:text-[var(--primary-color)] flex justify-between items-center w-fit">
-                {toggleGenres ? (
-                  <ChevronDown
-                    className="cursor-pointer duration-300 hover:text-[var(--primary-color)]"
-                    onClick={() => setToggleGenres(false)}
-                  />
-                ) : (
-                  <ChevronLeft
-                    className="cursor-pointer duration-300 hover:text-[var(--primary-color)]"
-                    onClick={() => setToggleGenres(true)}
-                  />
-                )}
-                <NavLink
-                  to="/genres"
-                  onClick={() => setToggleMenu(false)}
-                  className="ml-2"
-                >
+            <li
+              className="relative"
+              onClick={() => setToggleGenres((prev) => !prev)}
+            >
+              <div className="py-2 px-0 text-white rounded-sm duration-300 hover:text-[var(--primary-color)] flex justify-between items-center w-fit">
+                <ChevronLeft
+                  className={`${toggleGenres ? "-rotate-90" : "rotate-0"} cursor-pointer duration-300 hover:text-[var(--primary-color)]`}
+                />
+                <NavLink to="/genres" className="ml-2" onClick={handleClose}>
                   Genres
                 </NavLink>
               </div>
+              <DropdowmMenu
+                toggleGenres={toggleGenres}
+                customCss="relative top-0"
+                handleClose={handleClose}
+              />
             </li>
           </ul>
 
@@ -310,6 +350,7 @@ function Navbar() {
               onChange={handleQuery}
               onClick={handleOpen}
               ref={inputRef}
+              autoComplete="off"
             />
           </div>
           {/* Search results on Tablet */}
@@ -351,7 +392,31 @@ function Navbar() {
                             {item.title || item.original_title}
                           </p>
 
-                          <p className="text-[12px] text-gray-400">action</p>
+                          <div className="movie-data-box flex justify-start items-center gap-2 mt-1">
+                            {item?.genre_ids &&
+                              item?.genre_ids
+                                ?.slice(0, 2)
+                                .map((genre, index) => (
+                                  <div
+                                    key={genre}
+                                    className="gener-box flex items-center gap-1"
+                                  >
+                                    <IoMdRadioButtonOn />
+                                    <p className="text-[12px] text-gray-400">
+                                      {genresMap[genre]}
+                                    </p>
+                                  </div>
+                                ))}
+
+                            {item?.release_date && (
+                              <div className="gener-box flex items-center gap-1">
+                                <IoMdRadioButtonOn />
+                                <p className="text-[12px] text-gray-400">
+                                  {new Date(item?.release_date).getFullYear()}
+                                </p>
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </Link>
