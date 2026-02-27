@@ -54,6 +54,7 @@ function Navbar() {
   const handleClick = () => {
     inputRef.current.blur();
     setOpen(false);
+    setToggleMenu(false);
   };
   const handleClose = () => {
     setToggleMenu(false);
