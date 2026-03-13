@@ -13,6 +13,9 @@ import FetchGenre from "./pages/FetchGenre";
 import GenresList from "./pages/GenresList";
 import MoviesList from "./pages/MoviesList";
 import FetchCountry from "./pages/FetchCountry";
+import Actors from "./pages/Actors";
+import ActorMovies from "./pages/ActorMovies";
+import Search from "./pages/Search";
 
 function App() {
   return (
@@ -37,6 +40,9 @@ function App() {
           </Route>
 
           <Route path="/category/:category" element={<Category />} />
+          <Route path="/actors" element={<Actors />} />
+          <Route path="/actors/:actorId" element={<ActorMovies />} />
+          <Route path="/search" element={<Search />} />
         </Route>
 
         <Route path="*" element={<NotFound />} />

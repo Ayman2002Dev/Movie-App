@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import { fetchCategoryMovies } from "../store/Slices/MovieSlice";
 import Pagination from "../components/Pagination";
 import Loading from "../components/Loading";
@@ -12,7 +12,8 @@ function Category() {
   const { fetchCategory: categoryList } = useSelector((state) => state.movies);
   const categoryData = categoryList.data;
 
-  const currentPage = useSelector((state) => state.pagination.currentPage);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentPage = searchParams.get("page") || 1;
 
   useEffect(() => {
     dispatch(fetchCategoryMovies({ category, currentPage }));
@@ -60,7 +61,7 @@ function Category() {
               );
             })}
           </section>
-          <Pagination />
+          <Pagination totalPages={categoryList.totalPage} />
         </>
       )}
     </>

@@ -9,13 +9,16 @@ import Loading from "../components/Loading";
 import Section from "../components/Section";
 import SectionFixed from "../components/SectionFixed";
 import Pagination from "../components/Pagination";
+import { useSearchParams } from "react-router-dom";
 const Movie = lazy(() => import("../components/Movie"));
 
 function Home() {
   const moviesList = useSelector((state) => state.movies);
-
-  const currentPage = useSelector((state) => state.pagination.currentPage);
   const dispatch = useDispatch();
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentPage = searchParams.get("page") || 1;
+
   useEffect(() => {
     dispatch(popularMovies(currentPage));
     dispatch(nowPlayingMovies(currentPage));

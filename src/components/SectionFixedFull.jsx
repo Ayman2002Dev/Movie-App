@@ -4,12 +4,12 @@ import { Link } from "react-router-dom";
 import Loading from "./Loading";
 
 function SectionFixedFull(props) {
-  if (props?.data?.length === 0) {
+  if (props?.loading) {
     return <Loading />;
   }
   return (
     <section className="movies-section container mx-auto mt-16 mb-5 px-4 relative">
-      <div className="moviesContainer grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
+      <div className="moviesContainer grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
         {props.data &&
           props.data.map((movie) => (
             <div

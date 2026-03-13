@@ -7,7 +7,7 @@ export const popularMovies = createAsyncThunk(
   "movies/popularMovies",
   async (currentPage, { rejectWithValue }) => {
     try {
-      const totalPage = 300;
+      const totalPage = 500;
       const res = await axios.get(
         `${import.meta.env.VITE_MOVIES_API}/popular`,
         {
@@ -30,7 +30,7 @@ export const nowPlayingMovies = createAsyncThunk(
   "movies/nowPlayingMovies",
   async (currentPage, { rejectWithValue }) => {
     try {
-      const totalPage = 300;
+      const totalPage = 241;
       const res = await axios.get(
         `${import.meta.env.VITE_MOVIES_API}/now_playing`,
         {
@@ -53,7 +53,8 @@ export const topRatedMovies = createAsyncThunk(
   "movies/topRatedMovies",
   async (currentPage, { rejectWithValue }) => {
     try {
-      const totalPage = 296;
+      const totalPage = 500;
+
       const res = await axios.get(
         `${import.meta.env.VITE_MOVIES_API}/top_rated`,
         {
@@ -76,7 +77,9 @@ export const fetchCategoryMovies = createAsyncThunk(
   "movies/fetchCategoryMovies",
   async ({ category, currentPage }, { rejectWithValue }) => {
     try {
-      const totalPage = 296;
+      let totalPage =
+        category === "popular" ? 500 : category === "top_rated" ? 500 : 241;
+
       const res = await axios.get(
         `${import.meta.env.VITE_MOVIES_API}/${category}`,
         {
@@ -87,7 +90,7 @@ export const fetchCategoryMovies = createAsyncThunk(
           },
         },
       );
-      return res.data;
+      return { data: res.data, totalPage };
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
@@ -153,10 +156,10 @@ export const fetchMoviesCountry = createAsyncThunk(
 
 export const moviesSlice = createSlice({
   initialState: {
-    popular: { data: [], error: null, loading: false },
-    nowPlaying: { data: [], error: null, loading: false },
-    topRated: { data: [], error: null, loading: false },
-    fetchCategory: { data: [], error: null, loading: false },
+    popular: { data: [], error: null, loading: false, totalPage: 500 },
+    nowPlaying: { data: [], error: null, loading: false, totalPage: 241 },
+    topRated: { data: [], error: null, loading: false, totalPage: 500 },
+    fetchCategory: { data: [], error: null, loading: false, totalPage: 500 },
     moviesOriginCountry: {},
     fetchMovieCountry: {
       data: [],
@@ -215,7 +218,8 @@ export const moviesSlice = createSlice({
       })
       .addCase(fetchCategoryMovies.fulfilled, (state, action) => {
         state.fetchCategory.loading = false;
-        state.fetchCategory.data = action.payload.results;
+        state.fetchCategory.data = action.payload.data.results;
+        state.fetchCategory.totalPage = action.payload.totalPage;
       })
       .addCase(fetchCategoryMovies.rejected, (state, action) => {
         state.fetchCategory.loading = false;

@@ -1,14 +1,15 @@
 import { ChevronDown, ChevronLeft } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
+import defaultPerson from "../assets/defualt-person.svg";
 import useDebounce from "../hooks/useDebounce";
 import Loading from "./Loading";
-import { IoMdRadioButtonOn } from "react-icons/io";
+import { IoMdRadioButtonOn, IoMdSearch } from "react-icons/io";
 import DropdowmMenu from "./DropdowmMenu";
 
 function Navbar() {
-  const [toggleMenu, setToggleMenu] = useState(false);
+  const [toggleMenu, setToggleMenu] = useState(false); //
   const [toggleMovies, setToggleMovies] = useState(false);
   const [toggleGenres, setToggleGenres] = useState(false);
   const [query, setQuery] = useState("");
@@ -16,6 +17,9 @@ function Navbar() {
   const { results, loading } = useDebounce({ query, delay: 500 });
   const inputRef = useRef(null);
   const containerRef = useRef(null);
+  const { person = [], movies = [] } = results || {};
+
+  const navigate = useNavigate();
 
   const genresMap = {
     28: "Action",
@@ -60,6 +64,18 @@ function Navbar() {
     setToggleMenu(false);
   };
 
+  const handleSearch = () => {
+    navigate(`/search?q=${query}&type=all`);
+    setToggleMenu(false);
+    setOpen(false);
+    setToggleGenres(false);
+    setToggleMovies(false);
+  };
+
+  const handleKey = (e) => {
+    if (e.key === "Enter") return handleSearch();
+  };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -78,10 +94,63 @@ function Navbar() {
     };
   }, []);
 
+  const renderMediaItem = (item, type) => {
+    const title =
+      item.name || item.original_name || item.title || item.original_title;
+
+    const year =
+      item.release_date || item.first_air_date
+        ? new Date(item.release_date || item.first_air_date).getFullYear()
+        : null;
+
+    return (
+      <div className="flex items-center gap-3">
+        {/* Poster */}
+        <img
+          className="rounded-lg w-[65px] h-[45px] object-cover"
+          src={
+            item.poster_path
+              ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
+              : logo
+          }
+          alt={title}
+        />
+
+        {/* Content */}
+        <div className="overflow-hidden">
+          <p
+            title={title}
+            className="text-[13px] font-semibold text-[#afb9be] truncate hover:text-white transition-colors duration-300"
+          >
+            {title}
+          </p>
+
+          <div className="flex items-center gap-2 mt-1">
+            {/* Genres */}
+            {item?.genre_ids?.slice(0, 2).map((genre) => (
+              <div key={genre} className="flex items-center gap-1">
+                <IoMdRadioButtonOn />
+                <p className="text-[12px] text-gray-400">{genresMap[genre]}</p>
+              </div>
+            ))}
+
+            {/* Year */}
+            {year && (
+              <div className="flex items-center gap-1">
+                <IoMdRadioButtonOn />
+                <p className="text-[12px] text-gray-400">{year}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <section className="navbar-section" ref={containerRef}>
       <nav className="relative z-[9999] bg-[var(--bg-color)] shadow-sm shadow-[var(--primary-color)] backdrop-blur-3xl border-gray-200 w-full max-h-[72px]">
-        <div className="max-w-screen-xl relative flex flex-wrap items-center justify-between mx-auto p-4">
+        <div className="max-w-screen-xl relative flex  items-center justify-between mx-auto p-4">
           {/* Logo */}
           <Link
             to="/"
@@ -99,6 +168,15 @@ function Navbar() {
                 className="block py-2 px-7 text-white rounded-sm duration-300 hover:text-[var(--primary-color)]"
               >
                 Home
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="/actors"
+                onClick={() => setToggleMenu(false)}
+                className="block py-2 px-7 text-white rounded-sm duration-300 hover:text-[var(--primary-color)]"
+              >
+                Actors
               </NavLink>
             </li>
             <li
@@ -143,28 +221,21 @@ function Navbar() {
           <div className="flex lg:order-2 items-center gap-2 w-fit lg:w-[400px]">
             {/* Search Input (Desktop Only) */}
             <div className="hidden lg:block relative w-full group ">
-              <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none ">
-                <svg
-                  className="w-4 h-4"
-                  color="white"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    stroke="currentColor"
-                    d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                  />
-                </svg>
-              </div>
+              <button
+                onClick={handleSearch}
+                className="absolute top-[1px] right-[1px] flex items-center justify-center px-4 bg-[var(--primary-color)] h-[calc(100%-2px)] rounded-e-lg"
+              >
+                <IoMdSearch size={22} />
+              </button>
               <input
-                type="text"
+                type="search"
                 id="search-navbar"
-                className="block w-full p-2 ps-10 bg-transparent border border-white rounded-lg text-sm outline-none focus:text-white focus:border-[var(--primary-color)]"
+                className="block w-full p-2 pr-10 bg-transparent border border-white rounded-lg text-sm outline-none focus:text-white focus:border-[var(--primary-color)]"
                 placeholder="Search..."
                 onChange={handleQuery}
                 onClick={handleOpen}
+                onKeyUp={handleKey}
+                onFocus={(e) => e.target.select()}
                 ref={inputRef}
                 autoComplete="off"
               />
@@ -174,71 +245,49 @@ function Navbar() {
                 <div className="search-results absolute top-full right-0 mt-4 w-full min-h-80 max-h-[450px] overflow-auto rounded-lg bg-[#161e2b] p-5 transition-all duration-200">
                   {loading ? (
                     <Loading />
-                  ) : results.length ? (
-                    <div className="flex flex-col justify-center items-start gap-4">
-                      {results.map((item) => (
-                        <Link
-                          onClick={handleClick}
-                          to={`/movies/${item.id}`}
-                          key={item.id}
-                          className="bg-[#171b27] w-full p-2 pl-1 rounded-xl 
-                          transition-all duration-300 
-                        hover:bg-[#1f2636]"
-                        >
-                          <div className="flex items-center gap-3">
-                            {/* Poster */}
-                            <img
-                              className="rounded-lg w-[65px] h-[45px] object-cover"
-                              src={
-                                item.poster_path
-                                  ? `https://image.tmdb.org/t/p/w500${item?.poster_path}`
-                                  : logo
-                              }
-                              alt="poster Image"
-                            />
+                  ) : movies.length > 0 || person.length > 0 ? (
+                    <div className="all-results flex flex-col justify-center items-start gap-4">
+                      {/* Movies Results */}
+                      {movies.length > 0 &&
+                        movies.slice(0, 10).map((item) => (
+                          <Link
+                            onClick={handleClick}
+                            to={`/movies/${item.id}`}
+                            key={`movie-${item.id}`}
+                            className="bg-[#171b27] w-full p-2 pl-1 rounded-xl transition-all duration-300 hover:bg-[#1f2636]"
+                          >
+                            {renderMediaItem(item)}
+                          </Link>
+                        ))}
 
-                            {/* Content */}
-                            <div className="overflow-hidden">
-                              <p
-                                title={item.title || item.original_title}
-                                className="text-[13px] font-semibold text-[#afb9be] truncate
-                                transition-colors duration-300 
-                              hover:text-white"
-                              >
-                                {item.title || item.original_title}
-                              </p>
-
-                              <div className="movie-data-box flex justify-start items-center gap-2 mt-1">
-                                {item?.genre_ids &&
-                                  item?.genre_ids
-                                    ?.slice(0, 2)
-                                    .map((genre, index) => (
-                                      <div
-                                        key={genre}
-                                        className="gener-box flex items-center gap-1"
-                                      >
-                                        <IoMdRadioButtonOn />
-                                        <p className="text-[12px] text-gray-400">
-                                          {genresMap[genre]}
-                                        </p>
-                                      </div>
-                                    ))}
-
-                                {item?.release_date && (
-                                  <div className="gener-box flex items-center gap-1">
-                                    <IoMdRadioButtonOn />
-                                    <p className="text-[12px] text-gray-400">
-                                      {new Date(
-                                        item?.release_date,
-                                      ).getFullYear()}
-                                    </p>
-                                  </div>
-                                )}
+                      {/* Person Results */}
+                      {person.length > 0 && (
+                        <div className="person-results grid grid-cols-2 gap-2 justify-between w-full mt-6">
+                          {person.slice(0, 10).map((item) => (
+                            <Link
+                              onClick={handleClick}
+                              to={`/actors/${item.id}`}
+                              key={`person-${item.id}`}
+                              className="rounded-full"
+                            >
+                              <div className="flex items-center gap-3 flex-col">
+                                <img
+                                  className="rounded-full w-[70px] h-[70px] object-cover bg-white"
+                                  src={
+                                    item.profile_path
+                                      ? `https://image.tmdb.org/t/p/w500${item.profile_path}`
+                                      : defaultPerson
+                                  }
+                                  alt={item.name}
+                                />
+                                <p className="text-[13px] font-semibold text-[#afb9be] truncate hover:text-white">
+                                  {item.name}
+                                </p>
                               </div>
-                            </div>
-                          </div>
-                        </Link>
-                      ))}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <p>No results found for "{query}"</p>
@@ -288,6 +337,15 @@ function Navbar() {
                 Home
               </NavLink>
             </li>
+            <li>
+              <NavLink
+                to="/actors"
+                onClick={() => setToggleMenu(false)}
+                className="block py-2 px-3 text-white rounded-sm duration-300 hover:text-[var(--primary-color)]"
+              >
+                Actors
+              </NavLink>
+            </li>
             <li
               className="relative"
               onClick={() => setToggleMovies((prev) => !prev)}
@@ -328,100 +386,73 @@ function Navbar() {
 
           {/* Search (Tablet/Mobile) */}
           <div className="relative mt-3 lg:hidden">
-            <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-              <svg
-                className="w-4 h-4"
-                color="white"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  stroke="currentColor"
-                  d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                />
-              </svg>
-            </div>
+            <button
+              onClick={handleSearch}
+              className="absolute top-[1px] right-[1px] flex items-center justify-center px-4 bg-[var(--primary-color)] h-[calc(100%-2px)] rounded-e-lg"
+            >
+              <IoMdSearch size={22} />
+            </button>
             <input
               type="text"
               id="search-navbar-mobile"
-              className="block w-full p-2 ps-10 text-sm bg-transparent border border-gray-500 rounded-lg text-white outline-none focus:border-[var(--primary-color)]"
+              className="block w-full p-2 pr-10 text-sm bg-transparent border border-gray-500 rounded-lg text-white outline-none focus:border-[var(--primary-color)]"
               placeholder="Search..."
               onChange={handleQuery}
               onClick={handleOpen}
+              onKeyUp={handleKey}
+              onFocus={(e) => e.target.select()}
               ref={inputRef}
               autoComplete="off"
             />
           </div>
           {/* Search results on Tablet */}
           {open && (
-            <div className="search-results relative mt-4 w-full min-h-80 max-h-[450px] overflow-auto rounded-lg bg-[#161e2b] p-1  sm:p-5  transition-all duration-200">
+            <div className="search-results relative mt-4 w-full min-h-80 max-h-[450px] rounded-lg bg-[#161e2b] p-1  sm:p-5  transition-all duration-200 overflow-hidden">
               {loading ? (
                 <Loading />
-              ) : results.length ? (
-                <div className="flex flex-col justify-center items-start gap-4">
-                  {results.map((item) => (
-                    <Link
-                      onClick={handleClick}
-                      to={`/movies/${item.id}`}
-                      key={item.id}
-                      className="bg-[#171b27] w-full p-2 pl-1 rounded-xl 
-                          transition-all duration-300 
-                        hover:bg-[#1f2636]"
-                    >
-                      <div className="flex items-center gap-3">
-                        {/* Poster */}
-                        <img
-                          className="rounded-lg w-[65px] h-[45px] object-cover"
-                          src={
-                            item.poster_path
-                              ? `https://image.tmdb.org/t/p/w500${item?.poster_path}`
-                              : logo
-                          }
-                          alt="poster Image"
-                        />
+              ) : movies.length > 0 || person.length > 0 ? (
+                <div className="all-results flex flex-col justify-center items-start gap-4">
+                  {/* Movies Results */}
+                  {movies.length > 0 &&
+                    movies.slice(0, 10).map((item) => (
+                      <Link
+                        onClick={handleClick}
+                        to={`/movies/${item.id}`}
+                        key={`movie-${item.id}`}
+                        className="bg-[#171b27] w-full p-2 pl-1 rounded-xl transition-all duration-300 hover:bg-[#1f2636]"
+                      >
+                        {renderMediaItem(item)}
+                      </Link>
+                    ))}
 
-                        {/* Content */}
-                        <div className="overflow-hidden">
-                          <p
-                            title={item.title || item.original_title}
-                            className="text-[13px] font-semibold text-[#afb9be] truncate
-                                transition-colors duration-300 
-                              hover:text-white"
-                          >
-                            {item.title || item.original_title}
-                          </p>
-
-                          <div className="movie-data-box flex justify-start items-center gap-2 mt-1">
-                            {item?.genre_ids &&
-                              item?.genre_ids
-                                ?.slice(0, 2)
-                                .map((genre, index) => (
-                                  <div
-                                    key={genre}
-                                    className="gener-box flex items-center gap-1"
-                                  >
-                                    <IoMdRadioButtonOn />
-                                    <p className="text-[12px] text-gray-400">
-                                      {genresMap[genre]}
-                                    </p>
-                                  </div>
-                                ))}
-
-                            {item?.release_date && (
-                              <div className="gener-box flex items-center gap-1">
-                                <IoMdRadioButtonOn />
-                                <p className="text-[12px] text-gray-400">
-                                  {new Date(item?.release_date).getFullYear()}
-                                </p>
-                              </div>
-                            )}
+                  {/* Person Results */}
+                  {person.length > 0 && (
+                    <div className="person-results grid grid-cols-2 gap-2 justify-between w-full mt-6">
+                      {person.slice(0, 10).map((item) => (
+                        <Link
+                          onClick={handleClick}
+                          to={`/actors/${item.id}`}
+                          key={`person-${item.id}`}
+                          className="rounded-full"
+                        >
+                          <div className="flex items-center gap-3 flex-col">
+                            <img
+                              className="rounded-full w-[70px] h-[70px] object-cover bg-white"
+                              src={
+                                item.profile_path
+                                  ? `https://image.tmdb.org/t/p/w500${item.profile_path}`
+                                  : defaultPerson
+                              }
+                              alt={item.name}
+                            />
+                            <p className="text-[13px] font-semibold text-[#afb9be] truncate hover:text-white whitespace-pre-wrap">
+                              {item.name}
+                            </p>
                           </div>
-                        </div>
-                      </div>
-                    </Link>
-                  ))}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
                 </div>
               ) : (
                 <p>No results found for "{query}"</p>

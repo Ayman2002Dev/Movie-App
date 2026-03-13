@@ -6,6 +6,8 @@ import { MdAccessTime } from "react-icons/md";
 import { AiFillStar } from "react-icons/ai";
 import { IoEarth } from "react-icons/io5";
 import { BiSolidMoviePlay } from "react-icons/bi";
+import { GiTakeMyMoney } from "react-icons/gi";
+import { FaMoneyCheckDollar } from "react-icons/fa6";
 import Cast from "../components/Cast";
 import Loading from "../components/Loading";
 import logo from "../assets/second_logo.png";
@@ -88,7 +90,7 @@ function MovieDetails() {
             <span className="text-2xl ml-3 font-semibold">Watch Now</span>
           </a>
         </div>
-        <div className="info flex-1 sm:ml-8">
+        <div className="info flex-1 md:ml-8">
           <div className="header flex flex-col items-start sm:flex-row sm:justify-between sm:items-center">
             <h1 className="title text-2xl sm:text-3xl font-semibold">
               {movieData?.title}
@@ -145,6 +147,30 @@ function MovieDetails() {
               </div>
               <p>{movieData?.production_countries?.[0]?.name}</p>
             </div>
+            <div className="box flex items-center">
+              <div className="inner-box bg-gradient-to-r p-2 rounded-full flex from-[var(--bg-secondary-color)] from-50% via-[#171b26] to-[var(--bg-color)]">
+                <FaMoneyCheckDollar size={20} />
+                <span className="ml-2 mr-5 ">Budget :</span>
+              </div>
+              <p>
+                {movieData?.budget
+                  ? `$${(movieData?.budget).toLocaleString()}`
+                  : "-"}
+              </p>
+            </div>
+
+            <div className="box flex items-center">
+              <div className="inner-box bg-gradient-to-r p-2 rounded-full flex from-[var(--bg-secondary-color)] from-50% via-[#171b26] to-[var(--bg-color)]">
+                <GiTakeMyMoney size={20} />
+                <span className="ml-2 mr-5 ">Revenue :</span>
+              </div>
+              <p>
+                {movieData?.revenue
+                  ? `$${(movieData?.revenue).toLocaleString()}`
+                  : "-"}
+              </p>
+            </div>
+
             <div className="box flex items-center">
               <div className="inner-box bg-gradient-to-r p-2 rounded-full flex from-[var(--bg-secondary-color)] from-50% via-[#171b26] to-[var(--bg-color)]">
                 <FaRegCalendarAlt size={20} />
